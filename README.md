@@ -16,6 +16,37 @@ Evaluation is crucial in the development process of task-oriented dialogue syste
 | Rating 4    |   4,151 |   1,494 |      669 |   1,490 |      59 |
 | Rating 5    |     421 |      50 |        6 |      34 |       4 |
 
+### Data preparation
+
+The USS dataset is based on five benchmark task-oriented dialogue datasets: JDDC, Schema Guided Dialogue (SGD), MultiWOZ 2.1, Recommendation Dialogues (ReDial), and Coached Conversational Preference Elicitation (CCPE). 
+
+1. JDDC is a large-scale, real-world Chinese e-commerce conversation corpus with over 1 million multi-turn dialogues. We first classify the conversation into 11 types according to the type of transaction, e.g., delivery, return, invoice, etc. Then, we sample 300 dialogue sessions from each type, for a total of 3,300 conversations. The JDDC data set provides the action of each user utterances, including 234 categories. We compress them into 12 categories based on a manually defined classification method. 
+2. SGD is a dataset consisting of over 20K annotated task-oriented conversations between a human and a virtual assistant spanning 16 domains. MultiWOZ 2.1 is a multi-domain dialogue dataset spanning 7 distinct domains and containing over 10K dialogues. We sample 1,000 conversations from the two datasets. We directly use the action annotation from the original datasets. The SGD has 12 actions, and MultiWOZ has 21 actions. 
+3. ReDial is an annotated dataset consisting of over 10K conversations, where users recommend movies to each other. We sample 1,000 dialogues. Since the original dataset does not provide actions, we use the action annotation provided by IARD. 
+4. CCPE is a dataset consisting of 502 dialogues with 12K annotated utterances between a user and an assistant discussing movie preferences. We sample 300 dialogues from the CCPE dataset and used the actions provided by the original dataset.
+
+### User satisfaction assessment
+
+We hired 40 annotators to annotate exchange-level and dialogue-level user satisfaction levels of each conversation with five levels (1–5). We first show a dialogue between user and system in text form to the annotators and ask the annotators to label the user satisfaction of each user sentence at the exchange-level. We require annotators to rate user satisfaction based on past conversations, so the satisfaction is assessed before the user’s sentence, not after writing the sentence. In this regard, we are different from previous annotation work
+
+The scale we asked annotators to follow was:
+
+- 1 = Very dissatisfied (the system fails to understand and fulfill user’s request); 
+- 2 = Dissatisfied (understands the request but fails to satisfy it in any way); 
+- 3 = Normal (understands users request and either partially satisfies the request or provides information on how the request can be fulfilled); 
+- 4 = Satisfied (understands and satisfies the user request, but provides more information than what the user requested or takes extra turns before meeting the request); and 
+- 5 = Very satisfied (understands and satisfies the user request completely and efficiently).
+
+Using a 5 point scale over a binary scale provides an option for the annotators to factor in their subjective interpretation of the extent of success or failure of a system’s response to satisfy a user’s request. In addition, we ask the annotators to rate the dialogue-level satisfaction to capture the overall satisfaction of a user’s interaction with the system. 
+
+We divide the data into two groups based on language, JDDC (Chinese) and Others (English). In each group, we randomly assign data to annotators to ensure that the different types of conversations in the group are evaluated according to a consistent standard. For the JDDC group, we also ask annotators to give a textual explanation for the rating.
+
+###  Measures and disclaimers
+
+To guarantee annotation quality, we ask at least three annotators to repeatedly label the data. If there is a discrepancy among the three annotators (i.e., three annotators give three different ratings.), we ask a fourth annotator to recheck it. We removed the results of annotators that were inconsistent with others. Finally, expert ratings are highly correlated with a Fleiss Kappa score of 0.574. 
+
+In all the provided instruction materials, we described the purpose of this data construction effort and pointed out that the data will only be used for research. We did not record any information about the annotators and warned the annotators not to divulge any of their private information.
+
 ## Baselines
 
 ![Performance for user satisfaction prediction. Bold face indicates the best result in terms of the corresponding metric. Underline indicates comparable results to the best one.](https://github.com/sunnweiwei/user-satisfaction-simulation/blob/master/imgs/satisfaction-prediction.png)
