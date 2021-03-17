@@ -18,3 +18,6 @@ Evaluation is crucial in the development process of task-oriented dialogue syste
 
 ## Baselines
 
+![](https://github.com/sunnweiwei/user-satisfaction-simulation/blob/master/imgs/satisfaction-prediction.png)
+
+![](https://github.com/sunnweiwei/user-satisfaction-simulation/blob/master/imgs/action-prediction.png)
