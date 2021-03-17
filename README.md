@@ -18,6 +18,7 @@ Evaluation is crucial in the development process of task-oriented dialogue syste
 
 ## Baselines
 
-![](https://github.com/sunnweiwei/user-satisfaction-simulation/blob/master/imgs/satisfaction-prediction.png)
+![Performance for user satisfaction prediction. Bold face indicates the best result in terms of the corresponding metric. Underline indicates comparable results to the best one.](https://github.com/sunnweiwei/user-satisfaction-simulation/blob/master/imgs/satisfaction-prediction.png)
 
-![](https://github.com/sunnweiwei/user-satisfaction-simulation/blob/master/imgs/action-prediction.png)
+![ Performance for user action prediction. Bold face indicates the best result in terms of the corresponding metric. Underline indicates comparable results to the best one.](https://github.com/sunnweiwei/user-satisfaction-simulation/blob/master/imgs/action-prediction.png)
+
