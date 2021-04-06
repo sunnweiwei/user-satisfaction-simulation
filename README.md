@@ -53,3 +53,14 @@ In all the provided instruction materials, we described the purpose of this data
 
 ![ Performance for user action prediction. Bold face indicates the best result in terms of the corresponding metric. Underline indicates comparable results to the best one.](https://github.com/sunnweiwei/user-satisfaction-simulation/blob/master/imgs/action-prediction.png)
 
+## Utilization of this resource
+
+We have developed resources that are meant to help answer the question of what is a good dialogue. Our annotations and prediction task offer a better characterization of what is a good dialogue than existing datasets. Exchange-level user satisfaction and action prediction can reflect what kind of system behavior will bring positive user satisfaction and what behavior will harm the user experience, which makes our method applicable to many related fields.
+
+### Building human-like user simulation
+
+In most prior work, user simulations mechanically give the slots, and thus measure very limited aspects of a dialogue. Building a human-like user simulation remains an open challenge. In this study, we propose the task of user satisfaction simulation and release a dataset for the task. Inspired by previous work on similar tasks, we provide a series of baselines. However, due to the challenging nature of the task, there is plenty of room to improve user satisfaction, and to explore how user satisfaction prediction can be combined with action prediction. Response generation based on user satisfaction (i.e., reflect user satisfaction in a generated utterance) is still an open problem. Previous work on open-domain dialogue may serve as a reference. In addition to user satisfaction, how to ground user simulator by introducing external knowledge and persona to establish a more human-like user simulator has not yet been studied.
+
+### Future applications
+
+The USS dataset cannot only be used for user simulation but also for other conversational information access tasks. As a user satisfaction annotation dataset which exceeds existing ones in scale, our data can facilitate research on user satisfaction modeling and POMDP-based dialogue system. Moreover, the USS dataset can also facilitate research into dialogue breakdown detection, and human-machine hand-off prediction, etc. In the JDDC domain, we provide annotators’ explanations on user satisfaction annotations, which includes a total of 9,900 explanation texts. This information can be applied to user studies of user satisfaction, and interpretability studies of evaluations.
