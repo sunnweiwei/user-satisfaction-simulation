@@ -21,6 +21,7 @@ Example from SGD
 
 ```
 Role \t Text \t Action \t Sat1,Sat2,Sat3
+
 USER	I would like to find some Oneway Flights for my upcoming trip.	INFORM_INTENT	2,3,3
 SYSTEM	Sure, Where are planning to make a trip, please mention the destination and departure points? When do you plan to leave?	REQUEST	
 USER	I am leaving form Washington to Mexico city on the 10th.	INFORM	3,3,3
