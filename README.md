@@ -1,6 +1,8 @@
 # Simulating User Satisfaction for the Evaluation of Task-oriented Dialogue Systems
 
-We annotated a user satisfaction annotation data set, User Satisfaction Simulation (USS), that includes 6,800 dialogues. All user utterances in those dialogues, as well as the dialogues themselves, have been labeled based on a 5-level satisfaction scale. See [dataset](https://github.com/sunnweiwei/user-satisfaction-simulation/tree/master/dataset).
+We annotated a dialogue data set, User Satisfaction Simulation (USS), that includes 6,800 dialogues. All user utterances in those dialogues, as well as the dialogues themselves, have been labeled based on a 5-level satisfaction scale. See [dataset](https://github.com/sunnweiwei/user-satisfaction-simulation/tree/master/dataset).
+
+[Paper link](https://arxiv.org/pdf/2105.03748)
 
 ## Abstract
 
