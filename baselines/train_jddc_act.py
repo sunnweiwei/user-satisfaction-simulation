@@ -40,14 +40,13 @@ def load_jddc(dirname, tokenizer, lite=1):
     name = 'hierarchical_data'
     if lite:
         name = name + '_lite'
-    # if os.path.exists(f'dataset/jddc/tokenized/{name}.pkl'):
-    #     return read_pkl(f'dataset/jddc/tokenized/{name}.pkl')
+    if os.path.exists(f'{dirname}-{name}.pkl'):
+        return read_pkl(f'{dirname}-{name}.pkl')
     print('tokenized data JDDC')
 
-    PATH = 'dataset/jddc/jddc_data.txt'
-    raw = [line[:-1] for line in open(PATH, encoding='utf-8')]
+    raw = [line[:-1] for line in open(dirname, encoding='utf-8')]
 
-    from project.shared_private.jddc_action import domain2actions
+    from .jddc_config import domain2actions
 
     act2domain = {}
     for line in domain2actions.split('\n'):
@@ -58,7 +57,7 @@ def load_jddc(dirname, tokenizer, lite=1):
             act2domain[x] = domain
     data = []
     for line in raw:
-        if 'session_id' in line:
+        if len(line) == 0:
             data.append([])
         else:
             data[-1].append(line)
@@ -69,9 +68,10 @@ def load_jddc(dirname, tokenizer, lite=1):
     for session in data:
         his_input_ids = []
         for turn in session:
-            role, text, action, *score = turn.split('\t')
+            role, text, action, score = turn.split('\t')
+            score = score.split(',')
 
-            if role == '用户':
+            if role == 'USER':
                 x.append(copy.deepcopy(his_input_ids))
                 emo.append(get_main_score([int(item) - 1 for item in score]))
                 action = action.strip()
@@ -85,7 +85,7 @@ def load_jddc(dirname, tokenizer, lite=1):
 
     action_num = len(action_list)
     data = [x, emo, act, action_num]
-    write_pkl(data, f'dataset/jddc/tokenized/{name}.pkl')
+    write_pkl(data, f'{dirname}-{name}.pkl')
     return data
 
 

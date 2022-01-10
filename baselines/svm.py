@@ -1,4 +1,4 @@
-from .train_dstc import load_dstc
+from .train_sat import load_dstc
 import numpy as np
 from collections import defaultdict
 from sklearn.metrics import f1_score, precision_score, recall_score
@@ -14,55 +14,10 @@ def get_main_score(scores):
     return score
 
 
-def load_ccpe(dirname):
-    raw = [line[:-1] for line in open(f'{dirname}/data.txt', encoding='utf-8')]
-    data = []
-    for line in raw:
-        if line == '':
-            data.append([])
-        else:
-            data[-1].append(line)
-    x = []
-    emo = []
-    act1 = []
-    act2 = []
-    action_list1 = {}
-    action_list2 = {}
-    for session in data:
-        his_input_ids = []
-        for turn in session:
-            role, text, action, score = turn.split('\t')
-            score = score.split(',')
-            action = action.split(',')
-            action = action[0]
-            if action == '':
-                action1, action2 = 'other', 'other'
-            else:
-                action1, action2 = action.split('+')
-            if role == 'USER':
-                x.append(copy.deepcopy(' '.join(his_input_ids)))
-                emo.append(get_main_score([int(item) - 1 for item in score]))
-                action1 = action1.strip()
-                if action1 not in action_list1:
-                    action_list1[action1] = len(action_list1)
-                act1.append(action_list1[action1])
-
-                action2 = action2.strip()
-                if action2 not in action_list2:
-                    action_list2[action2] = len(action_list2)
-                act2.append(action_list2[action2])
-            his_input_ids.append(text.strip())
-    action_num1 = len(action_list1)
-    action_num2 = len(action_list2)
-    data = [x, emo, act1, act2, action_num1, action_num2]
-    return data
-
-
 def load_jddc(dirname, lite=1):
-    PATH = 'dataset/jddc/jddc_data.txt'
-    raw = [line[:-1] for line in open(PATH, encoding='utf-8')]
+    raw = [line[:-1] for line in open(dirname, encoding='utf-8')]
 
-    from project.shared_private.jddc_action import domain2actions
+    from jddc_config import domain2actions
 
     act2domain = {}
     for line in domain2actions.split('\n'):
@@ -73,7 +28,7 @@ def load_jddc(dirname, lite=1):
             act2domain[x] = domain
     data = []
     for line in raw:
-        if 'session_id' in line:
+        if len(line) == 0:
             data.append([])
         else:
             data[-1].append(line)
@@ -84,8 +39,9 @@ def load_jddc(dirname, lite=1):
     for session in data:
         his_input_ids = []
         for turn in session:
-            role, text, action, *score = turn.split('\t')
-            if role == '用户':
+            role, text, action, score = turn.split('\t')
+            score = score.split(',')
+            if role == 'USER':
                 x.append(copy.deepcopy(' '.join(his_input_ids)))
                 emo.append(get_main_score([int(item) - 1 for item in score]))
                 action = action.strip()
@@ -103,7 +59,7 @@ def load_jddc(dirname, lite=1):
 
 
 def load_data(dirname):
-    raw = [line[:-1] for line in open(f'{dirname}/data.txt', encoding='utf-8')]
+    raw = [line[:-1] for line in open(dirname, encoding='utf-8')]
     data = []
     for line in raw:
         if line == '':
@@ -147,11 +103,10 @@ def train(fold=0):
     from sklearn.metrics import cohen_kappa_score
     from .spearman import spearman
 
-    dataset = 'redial'
-    # x, emo, act1, act2, action_num1, action_num2 = load_ccpe(f'dataset/{dataset}')
+    dataset = 'MWOZ'
 
     # x, emo, act, action_num = load_jddc(f'dataset/{dataset}')
-    x, emo, act, action_num = load_data(f'dataset/{dataset}')
+    x, emo, act, action_num = load_data(f'dataset/{dataset},txt')
 
     ll = int(len(x) / 10)
     train_x = x[:ll * fold] + x[ll * (fold + 1):]
@@ -217,12 +172,10 @@ def train_act(fold=0):
     from sklearn.metrics import cohen_kappa_score
     from .spearman import spearman
 
-    dataset = 'ccpe'
-    x, emo, act1, act2, action_num1, action_num2 = load_ccpe(f'dataset/{dataset}')
-    act = act1
+    dataset = 'JDDC'
 
-    # x, emo, act, action_num = load_jddc(f'dataset/{dataset}')
-    # x, emo, act, action_num = load_data(f'dataset/{dataset}')
+    x, emo, act, action_num = load_jddc(f'dataset/{dataset}.txt')
+    # x, emo, act, action_num = load_data(f'dataset/{dataset}.txt')
 
     ll = int(len(x) / 10)
     train_x = x[:ll * fold] + x[ll * (fold + 1):]

@@ -2,15 +2,8 @@ from transformers import AdamW, BertTokenizer, BertModel
 import torch
 import torch.nn as nn
 import numpy as np
-from torch.nn.modules.normalization import LayerNorm
 from torch.nn.init import xavier_uniform_
 import torch.nn.functional as F
-from sentence_transformers import SentenceTransformer, util
-from torch.utils.data import Dataset, DataLoader
-from tqdm import tqdm
-import random
-import json
-import math
 import copy
 import warnings
 import os

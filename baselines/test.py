@@ -1,12 +1,11 @@
 from sklearn.metrics import cohen_kappa_score
-from project.main.spearman import spearman
+from .spearman import spearman
 from sklearn.metrics import f1_score, precision_score, recall_score
 
 
-def test():
+def test(name):
     best_result = [0. for _ in range(4)]
     for epoch in range(100):
-        name = 'outputs/jddc_emo/BERT'
 
         data = []
         for fold in range(10):
@@ -37,10 +36,9 @@ def test():
         print(epoch, best_result, test_result)
 
 
-def test_act():
+def test_act(name):
     best_result = [0. for _ in range(4)]
     for epoch in range(100):
-        name = 'outputs/jddc_act/BERT'
 
         data = []
         for fold in range(10):
@@ -57,5 +55,8 @@ def test_act():
         best_result = [max(i1, i2) for i1, i2 in zip(test_result, best_result)]
         print(epoch, best_result, test_result)
 
-test()
-# test_act()
+
+if __name__ == '__main__':
+
+    test('outputs/jddc_emo/BERT')
+    test_act('outputs/jddc_act/BERT')

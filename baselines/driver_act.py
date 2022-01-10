@@ -1,6 +1,7 @@
-from .train_jddc import train
+from .train_jddc_act import train as train_act
 import os
 import argparse
+
 parser = argparse.ArgumentParser()
 parser.add_argument('-fold', type=int)
 parser.add_argument('--data', type=str, default='dstc8')
@@ -12,7 +13,17 @@ print('train data', args.data)
 print('train model', args.model)
 print('train fold', args.fold)
 
-train(fold=args.fold, data_name=args.data, model_name=args.model)
+train_act(fold=args.fold, data_name=args.data, model_name=args.model)
+
+
+
+
+
+
+
+
+
+
 
 
 

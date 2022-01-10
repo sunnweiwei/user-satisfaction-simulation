@@ -35,98 +35,56 @@ def get_main_score(scores):
     return score
 
 
-def load_ccpe(dirname, tokenizer):
-    print(dirname)
+def load_jddc(dirname, tokenizer, lite=1):
     name = 'hierarchical_data'
+    if lite:
+        name = name + '_lite'
+    if os.path.exists(f'{dirname}-{name}.pkl'):
+        return read_pkl(f'{dirname}-{name}.pkl')
+    print('tokenized data JDDC')
 
-    if os.path.exists(f'{dirname}/tokenized/{name}.pkl'):
-        return read_pkl(f'{dirname}/tokenized/{name}.pkl')
-    print('tokenized data')
-    raw = [line[:-1] for line in open(f'{dirname}/data.txt', encoding='utf-8')]
+    raw = [line[:-1] for line in open(dirname, encoding='utf-8')]
+
+    from .jddc_config import domain2actions
+
+    act2domain = {}
+    for line in domain2actions.split('\n'):
+        domain = line[:line.index('[') - 1].strip()
+        actions = [x[1:-1] for x in line[line.index('[') + 1:-1].split(', ')]
+        # print(domain, actions)
+        for x in actions:
+            act2domain[x] = domain
     data = []
     for line in raw:
-        if line == '':
-            data.append([])
-        else:
-            data[-1].append(line)
-    x = []
-    emo = []
-    act1 = []
-    act2 = []
-    action_list1 = {}
-    action_list2 = {}
-    for session in data:
-        his_input_ids = []
-        for turn in session:
-            role, text, action, score = turn.split('\t')
-            score = score.split(',')
-            action = action.split(',')
-            action = action[0]
-            if action == '':
-                action1, action2 = 'other', 'other'
-            else:
-                action1, action2 = action.split('+')
-            if role == 'USER':
-                x.append(copy.deepcopy(his_input_ids))
-                emo.append(get_main_score([int(item) - 1 for item in score]))
-                action1 = action1.strip()
-                if action1 not in action_list1:
-                    action_list1[action1] = len(action_list1)
-                act1.append(action_list1[action1])
-
-                action2 = action2.strip()
-                if action2 not in action_list2:
-                    action_list2[action2] = len(action_list2)
-                act2.append(action_list2[action2])
-            ids = tokenizer.encode(text.strip())[1:]
-            his_input_ids.append(ids)
-    action_num1 = len(action_list1)
-    action_num2 = len(action_list2)
-    data = [x, emo, act1, act2, action_num1, action_num2]
-    write_pkl(data, f'{dirname}/tokenized/{name}.pkl')
-    return data
-
-
-def load_dstc(dirname, tokenizer):
-    print(dirname)
-    name = 'hierarchical_data'
-
-    if os.path.exists(f'{dirname}/tokenized/{name}.pkl'):
-        return read_pkl(f'{dirname}/tokenized/{name}.pkl')
-
-    print('tokenized data')
-    raw = [line[:-1] for line in open(f'{dirname}/data.txt', encoding='utf-8')]
-    data = []
-    for line in raw:
-        if line == '':
+        if len(line) == 0:
             data.append([])
         else:
             data[-1].append(line)
     x = []
     emo = []
     act = []
-    action_list = {}
+    action_list = {'other': 0}
     for session in data:
         his_input_ids = []
         for turn in session:
             role, text, action, score = turn.split('\t')
             score = score.split(',')
-            action = action.split(',')
-            action = action[0]
+
             if role == 'USER':
                 x.append(copy.deepcopy(his_input_ids))
                 emo.append(get_main_score([int(item) - 1 for item in score]))
                 action = action.strip()
+                if lite:
+                    action = act2domain.get(action, 'other')
                 if action not in action_list:
                     action_list[action] = len(action_list)
                 act.append(action_list[action])
-
             ids = tokenizer.encode(text.strip())[1:]
             his_input_ids.append(ids)
 
     action_num = len(action_list)
     data = [x, emo, act, action_num]
-    write_pkl(data, f'{dirname}/tokenized/{name}.pkl')
+    write_pkl(data, f'{dirname}-{name}.pkl')
     return data
 
 
@@ -200,8 +158,9 @@ def flat_collate_fn(data):
             }
 
 
-def train(fold=0, data_name='dstc8', model_name='HiGRU+ATTN', dialog_used=10):
-    print('[TRAIN]')
+def train(fold=0, data_name='dstc8', model_name='HiGRU+ATTN'):
+    print('[TRAIN] JDDC')
+    dialog_used = 10
 
     data_name = data_name.replace('\r', '')
     model_name = model_name.replace('\r', '')
@@ -213,11 +172,10 @@ def train(fold=0, data_name='dstc8', model_name='HiGRU+ATTN', dialog_used=10):
 
     save_path = f'outputs/{data_name}_emo/{model_name}_{fold}'
 
-    tokenizer = BertTokenizer.from_pretrained('bert-base-uncased')
-    # x, emo, act1, act2, action_num1, action_num2 = load_ccpe(f'dataset/{data_name}', tokenizer)
-    x, emo, act, action_num = load_dstc(f'dataset/{data_name}', tokenizer)
+    tokenizer = BertTokenizer.from_pretrained('bert-base-chinese')
 
-    # print(action_num)
+    x, emo, act, action_num = load_jddc(f'dataset/{data_name}', tokenizer)
+
     from .models import GRU, GRUAttention, BERTBackbone
     from .models import HierarchicalAttention, Hierarchical, ClassModel
     if model_name == 'HiGRU+ATTN':
@@ -242,7 +200,7 @@ def train(fold=0, data_name='dstc8', model_name='HiGRU+ATTN', dialog_used=10):
         DataFunc = FlatData
         cf = flat_collate_fn
     elif model_name == 'BERT':
-        model = ClassModel(backbone=BERTBackbone(layers_used=2, name='bert-base-uncased'), class_num=[5])
+        model = ClassModel(backbone=BERTBackbone(layers_used=2, name='bert-base-chinese'), class_num=[5])
         model = model.cuda()
         optimizer = AdamW(model.parameters(), 2e-5)
         batch_size = 6
