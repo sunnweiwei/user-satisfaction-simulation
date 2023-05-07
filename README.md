@@ -39,6 +39,7 @@ The USS dataset is based on five benchmark task-oriented dialogue datasets: [JDD
 | Rating 5    |     421 |      50 |        6 |      34 |       4 |
 
 ## Baselines
+The code for baseline reproduction can be found within `/baselines`.
 
 ![Performance for user satisfaction prediction. Bold face indicates the best result in terms of the corresponding metric. Underline indicates comparable results to the best one.](https://github.com/sunnweiwei/user-satisfaction-simulation/blob/master/imgs/satisfaction-prediction.png)
 
